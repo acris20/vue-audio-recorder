@@ -1,55 +1,20 @@
 <style lang="scss">
   .ar-player {
-    width: 380px;
-    height: unset;
-    border: 0;
-    border-radius: 0;
+    width: 320px;
+    height: 45px;
+    padding: 0 10px;
+    margin: 0 auto;
+    line-height: 45px;
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    background-color: unset;
-    font-family: 'Roboto', sans-serif;
+    justify-content: space-between;
+    border-bottom: 1px solid #E8E8E8;
+    position: relative;
 
-    & > .ar-player-bar {
-      border: 1px solid #E8E8E8;
-      border-radius: 24px;
-      margin: 0 0 0 5px;
-
-      & > .ar-player__progress {
-        width: 125px;
-      }
-    }
-
-    &-bar {
-      display: flex;
-      align-items: center;
-      height: 38px;
-      padding: 0 12px;
-      margin: 0 5px;
-    }
-
-    &-actions {
-      width: 55%;
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-    }
-
-    &__progress {
-      width: 160px;
-      margin: 0 8px;
-    }
-
-    &__time {
-      color: rgba(84,84,84,0.5);
-      font-size: 16px;
-      width: 41px;
-    }
-
+ 
     &__play {
-      width: 45px;
-      height: 45px;
+      position: absolute;
+      top: 10px;
+      right: -52px;
       background-color: #FFFFFF;
       box-shadow: 0 2px 11px 11px rgba(0,0,0,0.07);
 
@@ -85,26 +50,14 @@
 </style>
 
 <template>
-  <div class="ar-player">
-    <div class="ar-player-actions">
+<div>
       <icon-button
         id="play"
-        class="ar-icon ar-icon__lg ar-player__play"
+        class="ar-icon ar-icon__sm ar-player__play"
         :name="playBtnIcon"
         :class="{'ar-player__play--active': isPlaying, 'disabled': disablePlayButton}"
         @click.native="playback"/>
-    </div>
-
-    <div class="ar-player-bar" v-if="showPlayerProgress">
-      <div class="ar-player__time">{{playedTime}}</div>
-      <line-control
-        class="ar-player__progress"
-        ref-id="progress"
-        :percentage="progress"
-        @change-linehead="_onUpdateProgress"/>
-      <div class="ar-player__time">{{duration}}</div>
-      <volume-control @change-volume="_onChangeVolume" :class="{'disabled': disablePlayButton}"/>
-    </div>
+   
 
     <audio :id="playerUniqId" :src="audioSource"></audio>
   </div>

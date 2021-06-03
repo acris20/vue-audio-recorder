@@ -1,10 +1,10 @@
 <style lang="scss">
   .ar {
-    width: 420px;
+    width: 200px;
     font-family: 'Roboto', sans-serif;
     border-radius: 16px;
-    background-color: #FAFAFA;
-    box-shadow: 0 4px 18px 0 rgba(0,0,0,0.17);
+    /*background-color: #FAFAFA;
+    box-shadow: 0 4px 18px 0 rgba(0,0,0,0.17);*/
     position: relative;
     box-sizing: content-box;
 
@@ -50,9 +50,9 @@
 
       &__duration {
         color: #AEAEAE;
-        font-size: 32px;
+        font-size: 24px;
         font-weight: 500;
-        margin-top: 20px;
+        margin-top: 15px;
         margin-bottom: 16px;
       }
 
@@ -178,6 +178,12 @@
     }
   }
 
+  @media (min-device-width: 320px) and (max-device-width: 700px) {
+    .ar {
+      width: 90vw;
+    }
+  }
+
   @import '../scss/icons';
 </style>
 
@@ -203,14 +209,17 @@
         <icon-button
           class="ar-icon ar-icon__sm ar-recorder__stop"
           name="stop"
-          @click.native="stopRecorder"/>
+          @click.native="stopRecorder" v-if="!minimalMode"/> 
+          <minimal-player 
+            :record="selected" 
+            v-if="minimalMode"/>    
       </div>
 
-      <div class="ar-recorder__records-limit" v-if="attempts">Attempts: {{attemptsLeft}}/{{attempts}}</div>
+      <div class="ar-recorder__records-limit" v-if="attempts && !minimalMode">Attempts: {{attemptsLeft}}/{{attempts}}</div>
       <div class="ar-recorder__duration">{{recordedTime}}</div>
-      <div class="ar-recorder__time-limit" v-if="time">Record duration is limited: {{time}}m</div>
+      <div class="ar-recorder__time-limit" v-if="time && !minimalMode">Record duration is limited: {{time}}m</div>
 
-      <div class="ar-records">
+      <div class="ar-records" v-if="!minimalMode">
         <div
           class="ar-records__record"
           :class="{'ar-records__record--selected': record.id === selected.id}"
@@ -239,14 +248,18 @@
               :upload-url="uploadUrl"/>
         </div>
       </div>
-
-      <audio-player :record="selected"/>
+      <div v-if="!minimalMode">
+        <audio-player 
+          :record="selected"
+          :class="{ 'disabled' : selected === {} || selected === undefined }"/>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
   import AudioPlayer from './player'
+  import MinimalPlayer from './minimal-player.vue'
   import Downloader  from './downloader'
   import IconButton  from './icon-button'
   import Recorder    from '@/lib/recorder'
@@ -273,7 +286,10 @@
       failedUpload     : { type: Function },
       beforeUpload     : { type: Function },
       successfulUpload : { type: Function },
-      selectRecord     : { type: Function }
+      selectRecord     : { type: Function },
+      mode             : { type: String, default: 'minimal' },
+      showPlayer       : { type: Boolean, default: true }, 
+      showPlayerProgress : { type: Boolean, default: true },      
     },
     data () {
       return {
@@ -282,13 +298,15 @@
         recordList    : [],
         selected      : {},
         uploadStatus  : null,
+        minimalMode   : this.mode === 'minimal'
       }
     },
     components: {
       AudioPlayer,
       Downloader,
       IconButton,
-      Uploader
+      Uploader,
+      MinimalPlayer
     },
     mounted () {
       this.$eventBus.$on('start-upload', () => {
@@ -315,7 +333,9 @@
           return
         }
 
-        if (!this.isRecording || (this.isRecording && this.isPause)) {
+        if (this.isRecording && this.minimalMode) {
+          this.stopRecorder()
+        } else if (!this.isRecording || (this.isRecording && this.isPause)) {
           this.recorder.start()
         } else {
           this.recorder.pause()
@@ -328,6 +348,10 @@
 
         this.recorder.stop()
         this.recordList = this.recorder.recordList()
+
+        if(this.minimalMode){
+          this.selected = this.recordList[this.recordList.length - 1]
+        }
       },
       removeRecord (idx) {
         this.recordList.splice(idx, 1)
@@ -358,7 +382,7 @@
         return this.attempts - this.recordList.length
       },
       iconButtonType () {
-        return this.isRecording && this.isPause ? 'mic' : this.isRecording ? 'pause' : 'mic'
+        return this.isRecording && this.isPause ? 'mic' : this.isRecording && this.minimalMode ? 'stop' : this.isRecording ? 'pause' : 'mic'
       },
       isPause () {
         return this.recorder.isPause
