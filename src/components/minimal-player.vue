@@ -1,6 +1,6 @@
 <style lang="scss">
   .ar-player {
-    width: 320px;
+    width: 200px;
     height: 45px;
     padding: 0 10px;
     margin: 0 auto;
@@ -14,7 +14,7 @@
     &__play {
       position: absolute;
       top: 10px;
-      right: -52px;
+      right: 90px;
       background-color: #FFFFFF;
       box-shadow: 0 2px 11px 11px rgba(0,0,0,0.07);
 
