@@ -57,7 +57,6 @@
         :name="playBtnIcon"
         :class="{'ar-player__play--active': isPlaying, 'disabled': disablePlayButton}"
         @click.native="playback"/>
-   test
 
     <audio :id="playerUniqId" :src="audioSource"></audio>
   </div>
