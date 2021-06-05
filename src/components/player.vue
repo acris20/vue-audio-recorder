@@ -10,17 +10,14 @@
     justify-content: center;
     background-color: unset;
     font-family: 'Roboto', sans-serif;
-
     & > .ar-player-bar {
       border: 1px solid #E8E8E8;
       border-radius: 24px;
       margin: 0 0 0 5px;
-
       & > .ar-player__progress {
         width: 125px;
       }
     }
-
     &-bar {
       display: flex;
       align-items: center;
@@ -28,57 +25,38 @@
       padding: 0 12px;
       margin: 0 5px;
     }
-
     &-actions {
       width: 55%;
       display: flex;
       align-items: center;
       justify-content: space-around;
     }
-
     &__progress {
       width: 160px;
       margin: 0 8px;
     }
-
     &__time {
       color: rgba(84,84,84,0.5);
       font-size: 16px;
       width: 41px;
     }
-
     &__play {
       width: 45px;
       height: 45px;
       background-color: #FFFFFF;
       box-shadow: 0 2px 11px 11px rgba(0,0,0,0.07);
-
       &--active {
         fill: white !important;
         background-color: #05CBCD !important;
-
-        &:not(.disabled):hover{
+        &:hover {
           fill: #505050 !important;
         }
       }
     }
   }
-
-  div.disabled {
-    color: grey;
-    border-color: white;
-    // pointer-events: none;
-    opacity: .6;
-    cursor: not-allowed !important;
-    user-select: none;
-    &:hover {
-      cursor: not-allowed !important;
-    }
-  }
-
-  @media (min-device-width: 320px) and (max-device-width: 700px) {
+   @media (min-device-width: 320px) and (max-device-width: 700px) {
     .ar-player {
-      width: 85vw;
+      width: 90vw;
     }
   }
   @import '../scss/icons';
