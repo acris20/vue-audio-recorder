@@ -120,6 +120,7 @@
 
       this.player.addEventListener('ended', () => {
         this.isPlaying = false
+        this.$emit('finish-audio', 'audio finished')
       })
 
       this.player.addEventListener('loadeddata', (ev) => {
@@ -159,8 +160,10 @@
 
         if (this.isPlaying) {
           this.player.pause()
+          this.$emit('pause-audio', 'audio paused')
         } else {
           setTimeout(() => { this.player.play() }, 0)
+          this.$emit('play-audio', 'audio started')
         }
 
         this.isPlaying = !this.isPlaying

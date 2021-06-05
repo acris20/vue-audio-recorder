@@ -36,7 +36,7 @@
       :showPlayer="true"
       :showPlayerProgress="false"/>
 
-    <audio-player :src="mp3" v-if="!showRecorder"/>
+    <audio-player :src="mp3" v-if="!showRecorder" @play-audio="callback" @pause-audio="callback" @finish-audio="callback"/>
   </div>
 </template>
 
