@@ -1,26 +1,23 @@
 <style lang="scss">
   .ar {
-    width: 200px;
+    width: 420px;
     font-family: 'Roboto', sans-serif;
     border-radius: 16px;
-    /*background-color: #FAFAFA;
-    box-shadow: 0 4px 18px 0 rgba(0,0,0,0.17);*/
+    background-color: #FAFAFA;
+    box-shadow: 0 4px 18px 0 rgba(0,0,0,0.17);
     position: relative;
     box-sizing: content-box;
-
     &-content {
       padding: 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-
     &-records {
       height: 138px;
       padding-top: 1px;
       overflow-y: auto;
       margin-bottom: 20px;
-
       &__record {
         width: 320px;
         height: 45px;
@@ -31,7 +28,6 @@
         justify-content: space-between;
         border-bottom: 1px solid #E8E8E8;
         position: relative;
-
         &--selected {
           border: 1px solid #E8E8E8;
           border-radius: 24px;
@@ -41,34 +37,29 @@
         }
       }
     }
-
     &-recorder {
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
-
       &__duration {
         color: #AEAEAE;
-        font-size: 24px;
+        font-size: 32px;
         font-weight: 500;
-        margin-top: 15px;
+        margin-top: 20px;
         margin-bottom: 16px;
       }
-
       &__stop {
         position: absolute;
         top: 10px;
         right: -52px;
       }
-
       &__time-limit {
         position: absolute;
         color: #AEAEAE;
         font-size: 12px;
         top: 128px;
       }
-
       &__records-limit {
         position: absolute;
         color: #AEAEAE;
@@ -76,7 +67,6 @@
         top: 78px;
       }
     }
-
     &-spinner {
       display: flex;
       height: 30px;
@@ -88,7 +78,6 @@
       margin: auto;
       width: 144px;
       z-index: 10;
-
       &__dot {
         display: block;
         margin: 0 8px;
@@ -100,11 +89,8 @@
         animation-duration: 1.4s;
         animation-iteration-count: infinite;
         animation-fill-mode: both;
-
         &:nth-child(2) { animation-delay: .2s; }
-
         &:nth-child(3) { animation-delay: .4s; }
-
         @keyframes blink {
           0%    { opacity: .2; }
           20%   { opacity: 1;  }
@@ -112,24 +98,20 @@
         }
       }
     }
-
     &__text {
       color: rgba(84,84,84,0.5);
       font-size: 16px;
     }
-
     &__blur {
       filter: blur(2px);
       opacity: 0.7;
     }
-
     &__overlay {
       position: absolute;
       width: 100%;
       height: 100%;
       z-index: 10;
     }
-
     &__upload-status {
       text-align: center;
       font-size: 10px;
@@ -137,16 +119,13 @@
       letter-spacing: 1px;
       position: absolute;
       bottom: 0;
-
       &--success {
         color: green;
       }
-
       &--fail {
         color: red;
       }
     }
-
     &__rm {
       cursor: pointer;
       position: absolute;
@@ -160,7 +139,6 @@
       top: 0;
       color: rgb(244, 120, 90);
     }
-
     &__downloader,
     &__uploader {
       position: absolute;
@@ -168,22 +146,13 @@
       bottom: 0;
       margin: auto;
     }
-
     &__downloader {
       right: 115px;
     }
-
     &__uploader {
       right: 85px;
     }
   }
-
-  @media (min-device-width: 320px) and (max-device-width: 700px) {
-    .ar {
-      width: 90vw;
-    }
-  }
-
   @import '../scss/icons';
 </style>
 
@@ -209,17 +178,14 @@
         <icon-button
           class="ar-icon ar-icon__sm ar-recorder__stop"
           name="stop"
-          @click.native="stopRecorder" v-if="!minimalMode"/> 
-          <minimal-player 
-            :record="selected" 
-            v-if="minimalMode"/>    
+          @click.native="stopRecorder"/>
       </div>
 
-      <div class="ar-recorder__records-limit" v-if="attempts && !minimalMode">Attempts: {{attemptsLeft}}/{{attempts}}</div>
+      <div class="ar-recorder__records-limit" v-if="attempts">Attempts: {{attemptsLeft}}/{{attempts}}</div>
       <div class="ar-recorder__duration">{{recordedTime}}</div>
-      <div class="ar-recorder__time-limit" v-if="time && !minimalMode">Record duration is limited: {{time}}m</div>
+      <div class="ar-recorder__time-limit" v-if="time">Record duration is limited: {{time}}m</div>
 
-      <div class="ar-records" v-if="!minimalMode">
+      <div class="ar-records">
         <div
           class="ar-records__record"
           :class="{'ar-records__record--selected': record.id === selected.id}"
@@ -248,37 +214,29 @@
               :upload-url="uploadUrl"/>
         </div>
       </div>
-      <div v-if="!minimalMode">
-        <audio-player 
-          :record="selected"
-          :class="{ 'disabled' : selected === {} || selected === undefined }"/>
-      </div>
+
+      <audio-player :record="selected"/>
     </div>
   </div>
 </template>
 
 <script>
   import AudioPlayer from './player'
-  import MinimalPlayer from './minimal-player.vue'
   import Downloader  from './downloader'
   import IconButton  from './icon-button'
   import Recorder    from '@/lib/recorder'
   import Uploader    from './uploader'
   import UploaderPropsMixin from '@/mixins/uploader-props'
   import { convertTimeMMSS }  from '@/lib/utils'
-
   export default {
     mixins: [UploaderPropsMixin],
     props: {
       attempts : { type: Number },
       time     : { type: Number },
-
       bitRate    : { type: Number, default: 128   },
       sampleRate : { type: Number, default: 44100 },
-
       showDownloadButton : { type: Boolean, default: true },
       showUploadButton   : { type: Boolean, default: true },
-
       micFailed        : { type: Function },
       beforeRecording  : { type: Function },
       pauseRecording   : { type: Function },
@@ -286,10 +244,7 @@
       failedUpload     : { type: Function },
       beforeUpload     : { type: Function },
       successfulUpload : { type: Function },
-      selectRecord     : { type: Function },
-      mode             : { type: String, default: 'minimal' },
-      showPlayer       : { type: Boolean, default: true }, 
-      showPlayerProgress : { type: Boolean, default: true },      
+      selectRecord     : { type: Function }
     },
     data () {
       return {
@@ -298,25 +253,21 @@
         recordList    : [],
         selected      : {},
         uploadStatus  : null,
-        minimalMode   : this.mode === 'minimal'
       }
     },
     components: {
       AudioPlayer,
       Downloader,
       IconButton,
-      Uploader,
-      MinimalPlayer
+      Uploader
     },
     mounted () {
       this.$eventBus.$on('start-upload', () => {
         this.isUploading = true
         this.beforeUpload && this.beforeUpload('before upload')
       })
-
       this.$eventBus.$on('end-upload', (msg) => {
         this.isUploading = false
-
         if (msg.status === 'success') {
           this.successfulUpload && this.successfulUpload(msg.response)
         } else {
@@ -332,10 +283,7 @@
         if (this.attempts && this.recorder.records.length >= this.attempts) {
           return
         }
-
-        if (this.isRecording && this.minimalMode) {
-          this.stopRecorder()
-        } else if (!this.isRecording || (this.isRecording && this.isPause)) {
+        if (!this.isRecording || (this.isRecording && this.isPause)) {
           this.recorder.start()
         } else {
           this.recorder.pause()
@@ -345,13 +293,8 @@
         if (!this.isRecording) {
           return
         }
-
         this.recorder.stop()
         this.recordList = this.recorder.recordList()
-
-        if(this.minimalMode){
-          this.selected = this.recordList[this.recordList.length - 1]
-        }
       },
       removeRecord (idx) {
         this.recordList.splice(idx, 1)
@@ -382,7 +325,7 @@
         return this.attempts - this.recordList.length
       },
       iconButtonType () {
-        return this.isRecording && this.isPause ? 'mic' : this.isRecording && this.minimalMode ? 'stop' : this.isRecording ? 'pause' : 'mic'
+        return this.isRecording && this.isPause ? 'mic' : this.isRecording ? 'pause' : 'mic'
       },
       isPause () {
         return this.recorder.isPause
@@ -402,4 +345,3 @@
     }
   }
 </script>
-
