@@ -12,7 +12,7 @@
     font-family: 'Roboto', sans-serif;
     & > .ar-player-bar {
       border: 1px solid #E8E8E8;
-      border-radius: 24px;
+      border-radius: 5px;
       margin: 0 0 0 5px;
       & > .ar-player__progress {
         width: 125px;

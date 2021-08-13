@@ -153,6 +153,11 @@
       right: 85px;
     }
   }
+  @media (min-device-width: 320px) and (max-device-width: 700px) {
+    .ar {
+      width: 90vw;
+    }
+  }
   @import '../scss/icons';
 </style>
 
@@ -178,14 +183,14 @@
         <icon-button
           class="ar-icon ar-icon__sm ar-recorder__stop"
           name="stop"
-          @click.native="stopRecorder"/>
+          @click.native="stopRecorder" v-if="!minimalMode"/>
       </div>
 
-      <div class="ar-recorder__records-limit" v-if="attempts">Attempts: {{attemptsLeft}}/{{attempts}}</div>
+      <div class="ar-recorder__records-limit" v-if="attempts && !minimalMode">Attempts: {{attemptsLeft}}/{{attempts}}</div>
       <div class="ar-recorder__duration">{{recordedTime}}</div>
-      <div class="ar-recorder__time-limit" v-if="time">Record duration is limited: {{time}}m</div>
+      <div class="ar-recorder__time-limit" v-if="time && !minimalMode">Record duration is limited: {{time}}m</div>
 
-      <div class="ar-records">
+      <div class="ar-records" v-if="!minimalMode">
         <div
           class="ar-records__record"
           :class="{'ar-records__record--selected': record.id === selected.id}"
@@ -215,7 +220,7 @@
         </div>
       </div>
 
-      <audio-player :record="selected"/>
+      <audio-player :record="selected" :class="{ 'disabled' : selected === {} || selected === undefined }"/>
     </div>
   </div>
 </template>
@@ -244,7 +249,8 @@
       failedUpload     : { type: Function },
       beforeUpload     : { type: Function },
       successfulUpload : { type: Function },
-      selectRecord     : { type: Function }
+      selectRecord     : { type: Function },
+      mode             : { type: String, default: 'minimal' }
     },
     data () {
       return {
@@ -253,6 +259,7 @@
         recordList    : [],
         selected      : {},
         uploadStatus  : null,
+        minimalMode   : this.mode === 'minimal'
       }
     },
     components: {
@@ -283,7 +290,9 @@
         if (this.attempts && this.recorder.records.length >= this.attempts) {
           return
         }
-        if (!this.isRecording || (this.isRecording && this.isPause)) {
+        if (this.isRecording && this.minimalMode) {
+          this.stopRecorder()
+        } else if (!this.isRecording || (this.isRecording && this.isPause)) {
           this.recorder.start()
         } else {
           this.recorder.pause()
@@ -295,6 +304,9 @@
         }
         this.recorder.stop()
         this.recordList = this.recorder.recordList()
+        if(this.minimalMode){
+          this.selected = this.recordList[this.recordList.length - 1]
+        }
       },
       removeRecord (idx) {
         this.recordList.splice(idx, 1)
@@ -325,7 +337,7 @@
         return this.attempts - this.recordList.length
       },
       iconButtonType () {
-        return this.isRecording && this.isPause ? 'mic' : this.isRecording ? 'pause' : 'mic'
+        return this.isRecording && this.isPause ? 'mic' : this.isRecording && this.minimalMode ? 'stop' : this.isRecording ? 'pause' : 'mic'
       },
       isPause () {
         return this.recorder.isPause
