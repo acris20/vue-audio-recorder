@@ -1,6 +1,6 @@
 <style lang="scss">
   .ar-player {
-    width: 380px;
+    width: auto;
     height: unset;
     border: 0;
     border-radius: 0;
@@ -15,18 +15,18 @@
       border-radius: 5px;
       margin: 0 0 0 5px;
       & > .ar-player__progress {
-        width: 125px;
+        width: 60px;
       }
     }
     &-bar {
       display: flex;
       align-items: center;
       height: 38px;
-      padding: 0 12px;
+      padding: 0 8px;
       margin: 0 5px;
     }
     &-actions {
-      width: 55%;
+      width: auto;
       display: flex;
       align-items: center;
       justify-content: space-around;
@@ -44,10 +44,10 @@
       width: 45px;
       height: 45px;
       background-color: #FFFFFF;
-      box-shadow: 0 2px 11px 11px rgba(0,0,0,0.07);
+      box-shadow: 0 1px 4px 4px rgba(0,0,0,0.07);
       &--active {
         fill: white !important;
-        background-color: #05CBCD !important;
+        background-color: #CE6A6C !important;
         &:hover {
           fill: #505050 !important;
         }
@@ -67,7 +67,7 @@
     <div class="ar-player-actions">
       <icon-button
         id="play"
-        class="ar-icon ar-icon__lg ar-player__play"
+        class="ar-icon ar-icon__sm ar-player__play"
         :name="playBtnIcon"
         :class="{'ar-player__play--active': isPlaying, 'disabled': disablePlayButton}"
         @click.native="playback"/>
@@ -81,7 +81,7 @@
         :percentage="progress"
         @change-linehead="_onUpdateProgress"/>
       <div class="ar-player__time">{{duration}}</div>
-      <volume-control @change-volume="_onChangeVolume" :class="{'disabled': disablePlayButton}"/>
+      <!--<volume-control @change-volume="_onChangeVolume" :class="{'disabled': disablePlayButton}"/>-->
     </div>
 
     <audio :id="playerUniqId" :src="audioSource"></audio>

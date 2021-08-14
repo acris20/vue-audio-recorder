@@ -3,8 +3,8 @@
     width: 420px;
     font-family: 'Roboto', sans-serif;
     border-radius: 16px;
-    background-color: #FAFAFA;
-    box-shadow: 0 4px 18px 0 rgba(0,0,0,0.17);
+    /*background-color: #FAFAFA;
+    box-shadow: 0 4px 18px 0 rgba(0,0,0,0.17);*/
     position: relative;
     box-sizing: content-box;
     &-content {
