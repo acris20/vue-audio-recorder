@@ -1,62 +1,88 @@
 <style lang="scss">
   .ar-player {
-    width: 200px;
-    height: 45px;
-    padding: 0 10px;
-    margin: 0 auto;
-    line-height: 45px;
+    width: auto;
+    height: unset;
+    border: 0;
+    border-radius: 0;
     display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid #E8E8E8;
-    position: relative;
-
- 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: unset;
+    font-family: 'Roboto', sans-serif;
+    & > .ar-player-bar {
+      border: none;
+      border-radius: 5px;
+      margin: 0 0 0 5px;
+      & > .ar-player__progress {
+        width: 90px;
+      }
+    }
+    &-bar {
+      display: flex;
+      align-items: center;
+      height: 38px;
+      padding: 0 8px;
+      margin: 0 5px;
+    }
+    &-actions {
+      width: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+    &__progress {
+      width: 160px;
+      margin: 0 8px;
+    }
+    &__time {
+      color: #FFFFFF;
+      font-size: 15px;
+      width: auto;
+    }
     &__play {
-      position: absolute;
-      top: 10px;
-      right: 90px;
+      width: 45px;
+      height: 45px;
       background-color: #FFFFFF;
-      box-shadow: 0 2px 11px 11px rgba(0,0,0,0.07);
-
+      box-shadow: 0 1px 4px 4px rgba(0,0,0,0.07);
       &--active {
         fill: white !important;
-        background-color: #05CBCD !important;
-
-        &:not(.disabled):hover{
+        background-color: #CE6A6C !important;
+        &:hover {
           fill: #505050 !important;
         }
       }
     }
   }
-
-  div.disabled {
-    color: grey;
-    border-color: white;
-    // pointer-events: none;
-    opacity: .6;
-    cursor: not-allowed !important;
-    user-select: none;
-    &:hover {
-      cursor: not-allowed !important;
-    }
-  }
-
-  @media (min-device-width: 320px) and (max-device-width: 700px) {
+   @media (min-device-width: 320px) and (max-device-width: 700px) {
     .ar-player {
-      width: 85vw;
+      width: 90vw;
     }
   }
   @import '../scss/icons';
 </style>
 
 <template>
-<div>
+  <div class="ar-player">
+    <div class="ar-player-actions">
       <icon-button
         id="play"
-        class="ar-icon ar-icon__sm ar-player__play"
+        class="ar-icon ar-icon__lg ar-player__play"
         :name="playBtnIcon"
         :class="{'ar-player__play--active': isPlaying, 'disabled': disablePlayButton}"
         @click.native="playback"/>
+    </div>
+
+    <div class="ar-player-bar" v-if="showPlayerProgress">
+      <div class="ar-player__time">{{playedTime}}</div>
+      <line-control
+        class="ar-player__progress"
+        ref-id="progress"
+        :percentage="progress"
+        @change-linehead="_onUpdateProgress"/>
+      <div class="ar-player__time">{{duration}}</div>
+      <!--<volume-control @change-volume="_onChangeVolume" :class="{'disabled': disablePlayButton}"/>-->
+    </div>
 
     <audio :id="playerUniqId" :src="audioSource"></audio>
   </div>
@@ -94,6 +120,7 @@
 
       this.player.addEventListener('ended', () => {
         this.isPlaying = false
+        this.$emit('finish-audio', 'audio finished')
       })
 
       this.player.addEventListener('loadeddata', (ev) => {
@@ -133,8 +160,10 @@
 
         if (this.isPlaying) {
           this.player.pause()
+          this.$emit('pause-audio', 'audio paused')
         } else {
           setTimeout(() => { this.player.play() }, 0)
+          this.$emit('play-audio', 'audio started')
         }
 
         this.isPlaying = !this.isPlaying

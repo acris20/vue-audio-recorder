@@ -5,7 +5,7 @@
     border: 0;
     border-radius: 0;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
     background-color: unset;
@@ -15,7 +15,7 @@
       border-radius: 5px;
       margin: 0 0 0 5px;
       & > .ar-player__progress {
-        width: 60px;
+        width: 90px;
       }
     }
     &-bar {
@@ -36,7 +36,7 @@
       margin: 0 8px;
     }
     &__time {
-      color: rgba(84,84,84,0.5);
+      color: rgba(84,84,84,1);
       font-size: 15px;
       width: auto;
     }
