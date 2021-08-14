@@ -5,13 +5,13 @@
     border: 0;
     border-radius: 0;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     background-color: unset;
     font-family: 'Roboto', sans-serif;
     & > .ar-player-bar {
-      border: 1px solid #E8E8E8;
+      border: none;
       border-radius: 5px;
       margin: 0 0 0 5px;
       & > .ar-player__progress {
@@ -37,8 +37,8 @@
     }
     &__time {
       color: rgba(84,84,84,0.5);
-      font-size: 16px;
-      width: 41px;
+      font-size: 15px;
+      width: auto;
     }
     &__play {
       width: 45px;
@@ -67,7 +67,7 @@
     <div class="ar-player-actions">
       <icon-button
         id="play"
-        class="ar-icon ar-icon__sm ar-player__play"
+        class="ar-icon ar-icon__lg ar-player__play"
         :name="playBtnIcon"
         :class="{'ar-player__play--active': isPlaying, 'disabled': disablePlayButton}"
         @click.native="playback"/>
